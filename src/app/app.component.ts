@@ -1,20 +1,23 @@
-import { Component } from '@angular/core';
-import { HeaderComponent } from './header/header.component';
-import { HomeComponent } from './home/home.component';
+import { Component, signal } from '@angular/core';
+import { HomeComponent } from '@app/components/home/home.component';
+import { PokemonSpeciesResponse } from './types/pokemonSpecies';
 
 @Component({
   selector: 'app-root',
-  imports: [HomeComponent, HeaderComponent],
+  imports: [HomeComponent],
   template: `
     <main>
-      <app-header />
-      <section class="content">
-        <app-home></app-home>
-      </section>
+      <div class="container">
+        <app-home />
+      </div>
     </main>
   `,
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent {
-  title = 'default';
+  pokemon = signal<PokemonSpeciesResponse | undefined>(undefined);
+
+  setPokemon(pokemon: PokemonSpeciesResponse) {
+    this.pokemon.set(pokemon);
+  }
 }

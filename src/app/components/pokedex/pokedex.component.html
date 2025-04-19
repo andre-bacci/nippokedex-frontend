@@ -1,0 +1,19 @@
+<section class="p-10">
+  <div class="flex flex-row justify-center"><img [src]="pokemonResponse()?.sprites?.front_default" /></div>
+  <div class="flex flex-row justify-center">
+    <mat-form-field>
+      <mat-label>Version</mat-label>
+      <mat-select [(ngModel)]="version">
+        @for (version of versions(); track version) {
+          <mat-option [value]="version">{{ version }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  </div>
+  @if (dexEntryEn() && dexEntryJp()) {
+    <div class="dex-entries flex flex-row justify-between text-xl gap-10">
+      <div class="w-[50%] bg-amber-50 rounded-2xl p-2">{{ dexEntryJp() }}</div>
+      <div class="w-[50%] bg-amber-50 rounded-2xl p-2">{{ dexEntryEn() }}</div>
+    </div>
+  }
+</section>
