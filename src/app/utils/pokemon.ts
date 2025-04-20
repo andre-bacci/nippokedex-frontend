@@ -1,4 +1,4 @@
-import { FlavorTextEntry } from '../types/pokemonSpecies';
+import { FlavorTextEntry, Name } from '@app/types/pokemonSpecies';
 
 export function getDexEntry(
   language: string | undefined,
@@ -6,9 +6,16 @@ export function getDexEntry(
   dexEntries: FlavorTextEntry[] | undefined,
 ): string | undefined {
   if (!dexEntries || !version || !language) return undefined;
-  return dexEntries
+  const entry = dexEntries
     .find((dexEntry) => dexEntry.language.name == language && dexEntry.version.name == version)
-    ?.flavor_text.replace('\f', '');
+    ?.flavor_text.replace('\f', ' ')
+    .replace('\n', ' ');
+  return entry ?? 'Unavailable in this language';
+}
+
+export function getName(language: string | undefined, names: Name[] | undefined): string | undefined {
+  if (!names || !language) return undefined;
+  return names.find((name) => name.language.name == language)?.name;
 }
 
 export function getAvailableVersions(languages: string[], dexEntries: FlavorTextEntry[] | undefined): string[] {
@@ -32,4 +39,8 @@ export function getAvailableVersions(languages: string[], dexEntries: FlavorText
     }
   }
   return availableVersions;
+}
+
+export function formatSpeciesNameToQuery(pokemon: string): string {
+  return pokemon.replace(' ', '-');
 }

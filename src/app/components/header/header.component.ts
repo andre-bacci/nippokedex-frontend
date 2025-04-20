@@ -6,6 +6,7 @@ import { MatInputModule } from '@angular/material/input';
 import { PokemonService } from '@app/services/pokemon';
 import { PokemonResponse } from '@app/types/pokemon';
 import { PokemonSpeciesResponse, VersionName } from '@app/types/pokemonSpecies';
+import { formatSpeciesNameToQuery } from '@app/utils/pokemon';
 
 @Component({
   selector: 'app-header',
@@ -35,7 +36,7 @@ export class HeaderComponent {
   @Output() pokedexData = new EventEmitter<PokemonSpeciesResponse>();
   @Output() pokemonData = new EventEmitter<PokemonResponse>();
   searchPokemon(pokemon: string) {
-    this.service.getPokemonSpecies(pokemon).subscribe((response) => {
+    this.service.getPokemonSpecies(formatSpeciesNameToQuery(pokemon)).subscribe((response) => {
       this.service.getPokemonById(response.id).subscribe((response) => {
         this.pokemonData.emit(response);
       });
