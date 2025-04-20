@@ -1,3 +1,4 @@
+import { Type } from '@app/types/pokemon';
 import { FuriganaPart } from '@app/types/text';
 
 export interface DexEntry {
@@ -6,4 +7,5 @@ export interface DexEntry {
   description?: string;
   description_kana?: string;
   furigana_text?: FuriganaPart[];
+  types?: Type[];
 }

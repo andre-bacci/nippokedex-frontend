@@ -1,5 +1,7 @@
 <section class="px-10 pb-10">
-  @if (pokemonResponse()) {
+  @if (loading()) {
+    <div class="flex flex-row justify-center">Loading response...</div>
+  } @else if (pokemonResponse()) {
     <div class="flex flex-col gap-2">
       <div class="flex flex-row justify-center p-1">
         <div class="border-2 border-amber-200 rounded-xl p-10">
@@ -8,6 +10,7 @@
       </div>
       <div class="text-3xl flex flex-row justify-center">{{ nameJp() }}</div>
       <div class="text-3xl flex flex-row justify-center">{{ nameEn() }}</div>
+      <app-pokemon-types class="text-xl flex flex-row justify-center" [types]="pokemonResponse()?.types" />
       <div class="flex flex-row justify-center">
         <mat-form-field>
           <mat-label>Version</mat-label>
@@ -35,5 +38,7 @@
         </div>
       }
     </div>
+  } @else if (error()) {
+    <div class="flex flex-row justify-center">{{ error() }}</div>
   }
 </section>

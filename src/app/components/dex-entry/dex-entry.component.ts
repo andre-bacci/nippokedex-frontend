@@ -43,7 +43,6 @@ export class DexEntryComponent {
     if (this.language() === 'ja') {
       try {
         const furigana_text = parseFurigana(this.description(), this.description_kana());
-        console.log(furigana_text);
         return {
           furigana_text: furigana_text,
           error: '',
@@ -68,6 +67,7 @@ export class DexEntryComponent {
       description: this.description(),
       description_kana: this.description_kana(),
       furigana_text: this.furigana_process().furigana_text,
+      types: this.pokemonResponse()?.types,
     };
   });
 }

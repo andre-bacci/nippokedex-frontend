@@ -10,9 +10,19 @@ import { PokemonSpeciesResponse } from '@app/types/pokemonSpecies';
   template: `
     <main>
       <div class="container">
-        <app-header (pokedexData)="setPokedexData($event)" (pokemonData)="setPokemonData($event)" />
+        <app-header
+          (pokedexData)="setPokedexData($event)"
+          (pokemonData)="setPokemonData($event)"
+          (error)="setApiError($event)"
+          (loading)="setApiLoading($event)"
+        />
         <section class="content">
-          <app-pokedex [pokemonSpeciesResponse]="pokedexData()" [pokemonResponse]="pokemonData()"></app-pokedex>
+          <app-pokedex
+            [pokemonSpeciesResponse]="pokedexData()"
+            [pokemonResponse]="pokemonData()"
+            [error]="apiError()"
+            [loading]="apiLoading()"
+          />
         </section>
       </div>
     </main>
@@ -23,6 +33,8 @@ export class HomeComponent {
   pokedexData = signal<PokemonSpeciesResponse | undefined>(undefined);
   pokemonData = signal<PokemonResponse | undefined>(undefined);
   version = signal<string>('');
+  apiError = signal<string>('');
+  apiLoading = signal<boolean>(false);
 
   setPokedexData(pokemon: PokemonSpeciesResponse) {
     this.pokedexData.set(pokemon);
@@ -30,5 +42,13 @@ export class HomeComponent {
 
   setPokemonData(pokemon: PokemonResponse) {
     this.pokemonData.set(pokemon);
+  }
+
+  setApiError(error: string) {
+    this.apiError.set(error);
+  }
+
+  setApiLoading(loading: boolean) {
+    this.apiLoading.set(loading);
   }
 }

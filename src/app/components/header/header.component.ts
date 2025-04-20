@@ -18,7 +18,7 @@ import { formatSpeciesNameToQuery } from '@app/utils/pokemon';
         <div class="flex flex-row gap-2 items-center">
           <mat-form-field class="w-80" subscriptSizing="dynamic">
             <mat-label>Search a Pokémon by index or name</mat-label>
-            <input type="text" matInput [(ngModel)]="pokemon" />
+            <input type="text" matInput [(ngModel)]="pokemon" (keyup.enter)="searchPokemon(pokemon())" />
           </mat-form-field>
           <button mat-button (click)="searchPokemon(pokemon())">Search</button>
         </div>
@@ -34,12 +34,30 @@ export class HeaderComponent {
   version = signal('');
   @Output() pokedexData = new EventEmitter<PokemonSpeciesResponse>();
   @Output() pokemonData = new EventEmitter<PokemonResponse>();
+  @Output() error = new EventEmitter<string>();
+  @Output() loading = new EventEmitter<boolean>();
   searchPokemon(pokemon: string) {
-    this.service.getPokemonSpecies(formatSpeciesNameToQuery(pokemon)).subscribe((response) => {
-      this.service.getPokemonById(response.id).subscribe((response) => {
-        this.pokemonData.emit(response);
-      });
-      this.pokedexData.emit(response);
+    this.pokedexData.emit();
+    this.pokemonData.emit();
+    this.loading.emit(true);
+    this.service.getPokemonSpecies(formatSpeciesNameToQuery(pokemon)).subscribe({
+      next: (response) => {
+        this.service.getPokemonById(response.id).subscribe({
+          next: (response) => {
+            this.pokemonData.emit(response);
+          },
+          error: (err) => {
+            this.error.emit(`Error finding pokémon with name/index ${pokemon}`);
+          },
+        });
+        this.pokedexData.emit(response);
+        this.error.emit('');
+        this.loading.emit(false);
+      },
+      error: (err) => {
+        this.error.emit(`Error finding pokémon with name/index ${pokemon}`);
+        this.loading.emit(false);
+      },
     });
   }
 }

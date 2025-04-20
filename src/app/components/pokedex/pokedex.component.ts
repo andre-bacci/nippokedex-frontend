@@ -6,16 +6,19 @@ import { DexEntryComponent } from '@app/components/dex-entry/dex-entry.component
 import { PokemonResponse } from '@app/types/pokemon';
 import { PokemonSpeciesResponse } from '@app/types/pokemonSpecies';
 import { getAvailableVersions, getName } from '@app/utils/pokemon';
+import { PokemonTypesComponent } from '../pokemon-types/pokemon-types.component';
 
 @Component({
   selector: 'app-pokedex',
-  imports: [MatFormFieldModule, FormsModule, MatSelectModule, DexEntryComponent],
+  imports: [MatFormFieldModule, FormsModule, MatSelectModule, DexEntryComponent, PokemonTypesComponent],
   templateUrl: './pokedex.component.html',
   styleUrl: './pokedex.component.css',
 })
 export class PokedexComponent implements OnChanges {
   pokemonSpeciesResponse = input<PokemonSpeciesResponse>();
   pokemonResponse = input<PokemonResponse>();
+  error = input('');
+  loading = input(false);
 
   version = signal('');
 
