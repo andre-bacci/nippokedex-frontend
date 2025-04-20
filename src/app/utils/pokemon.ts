@@ -1,4 +1,4 @@
-import { FlavorTextEntry, Name } from '@app/types/pokemonSpecies';
+import { FlavorTextEntry, Genera, Name } from '@app/types/pokemonSpecies';
 
 export function getDexEntry(
   language: string | undefined,
@@ -16,6 +16,11 @@ export function getDexEntry(
 export function getName(language: string | undefined, names: Name[] | undefined): string | undefined {
   if (!names || !language) return undefined;
   return names.find((name) => name.language.name == language)?.name;
+}
+
+export function getGenus(language: string | undefined, genera: Genera[] | undefined): string | undefined {
+  if (!genera || !language) return undefined;
+  return genera.find((genera) => genera.language.name == language)?.genus;
 }
 
 export function getAvailableVersions(languages: string[], dexEntries: FlavorTextEntry[] | undefined): string[] {

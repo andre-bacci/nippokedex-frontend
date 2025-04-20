@@ -5,7 +5,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { PokemonService } from '@app/services/pokemon';
 import { PokemonResponse } from '@app/types/pokemon';
-import { PokemonSpeciesResponse, VersionName } from '@app/types/pokemonSpecies';
+import { PokemonSpeciesResponse } from '@app/types/pokemonSpecies';
 import { formatSpeciesNameToQuery } from '@app/utils/pokemon';
 
 @Component({
@@ -16,8 +16,8 @@ import { formatSpeciesNameToQuery } from '@app/utils/pokemon';
       <div class="flex w-full flex-row justify-between p-2">
         <h1 class="text-3xl">NipPokéDex!</h1>
         <div class="flex flex-row gap-1">
-          <mat-form-field>
-            <mat-label>Search a Pokémon</mat-label>
+          <mat-form-field class="w-80">
+            <mat-label>Search a Pokémon by index or name</mat-label>
             <input type="text" matInput [(ngModel)]="pokemon" />
           </mat-form-field>
           <button mat-button (click)="searchPokemon(pokemon())">Search</button>
@@ -32,7 +32,6 @@ export class HeaderComponent {
   service = new PokemonService();
   pokemon = signal('');
   version = signal('');
-  versions = Object.values(VersionName);
   @Output() pokedexData = new EventEmitter<PokemonSpeciesResponse>();
   @Output() pokemonData = new EventEmitter<PokemonResponse>();
   searchPokemon(pokemon: string) {

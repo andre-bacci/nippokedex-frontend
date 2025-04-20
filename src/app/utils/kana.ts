@@ -2,8 +2,12 @@ import { FuriganaPart } from '@app/types/text';
 
 export function parseFurigana(kanjiText: string | undefined, kanaString: string | undefined): FuriganaPart[] {
   if (kanjiText === undefined || kanaString === undefined) return [];
+  kanjiText = kanjiText.replace(/\s+/g, ' ').trim();
+  kanaString = kanaString.replace(/\s+/g, ' ').trim();
+
   // Split the kanji text into tokens of consecutive kanji or non-kanji characters
-  const tokens = kanjiText.match(/[\u4e00-\u9faf]+|[^\u4e00-\u9faf]+/g) || [];
+  const kanjiRegex = /[\u4e00-\u9faf\u3005]+|[^\u4e00-\u9faf\u3005]+/g;
+  const tokens = kanjiText.match(kanjiRegex) || [];
   let currentKanaIndex = 0;
   const result: FuriganaPart[] = [];
 
@@ -11,7 +15,7 @@ export function parseFurigana(kanjiText: string | undefined, kanaString: string 
     const token = tokens[i];
 
     // Check if the token consists of kanji characters
-    const isKanji = /^[\u4e00-\u9faf]+$/.test(token);
+    const isKanji = /^[\u4e00-\u9faf\u3005]+$/.test(token);
 
     if (isKanji) {
       // Find the next non-kanji token to determine kana bounds

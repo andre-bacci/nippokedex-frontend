@@ -11,7 +11,7 @@
       <mat-form-field>
         <mat-label>Version</mat-label>
         <mat-select [(ngModel)]="version">
-          @for (version of versions(); track version) {
+          @for (version of availableVersions(); track version) {
             <mat-option [value]="version">{{ version }}</mat-option>
           }
         </mat-select>
@@ -19,10 +19,18 @@
     </div>
     @if (version()) {
       <div class="dex-entries flex flex-row justify-between text-xl gap-10">
-        <div class="w-[50%] bg-amber-50 rounded-2xl p-2">
-          <app-furigana [kanaText]="dexEntryKana()" [kanjiText]="dexEntryJp()"></app-furigana>
-        </div>
-        <div class="w-[50%] bg-amber-50 rounded-2xl p-2">{{ dexEntryEn() }}</div>
+        <app-dex-entry
+          class="w-[50%]"
+          [version]="version()"
+          [pokemonSpeciesResponse]="pokemonSpeciesResponse()"
+          language="ja"
+        />
+        <app-dex-entry
+          class="w-[50%]"
+          [version]="version()"
+          [pokemonSpeciesResponse]="pokemonSpeciesResponse()"
+          language="en"
+        />
       </div>
     }
   }

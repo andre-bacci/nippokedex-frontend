@@ -1,23 +1,10 @@
-export enum VersionName {
-  RED = 'red',
-  BLUE = 'blue',
-  GREEN = 'green',
-  SWORD = 'sword',
-}
-
-export enum LanguageName {
-  JAPANESE = 'ja',
-  JAPANESE_KANA = 'ja-Hkrt',
-  ENGLISH = 'en',
-}
-
 export interface Language {
-  name: LanguageName;
+  name: string;
   url: URL;
 }
 
 export interface Version {
-  name: VersionName;
+  name: string;
   url: URL;
 }
 
