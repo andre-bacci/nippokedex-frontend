@@ -2,10 +2,11 @@ import { FuriganaPart } from '@app/types/text';
 
 export function parseFurigana(kanjiText: string | undefined, kanaString: string | undefined): FuriganaPart[] {
   if (kanjiText === undefined || kanaString === undefined) return [];
+
+  // Normalize whitespace by replacing any whitespace with single space and trim
   kanjiText = kanjiText.replace(/\s+/g, ' ').trim();
   kanaString = kanaString.replace(/\s+/g, ' ').trim();
 
-  // Split the kanji text into tokens of consecutive kanji or non-kanji characters
   const kanjiRegex = /[\u4e00-\u9faf\u3005]+|[^\u4e00-\u9faf\u3005]+/g;
   const tokens = kanjiText.match(kanjiRegex) || [];
   let currentKanaIndex = 0;
@@ -13,43 +14,52 @@ export function parseFurigana(kanjiText: string | undefined, kanaString: string 
 
   for (let i = 0; i < tokens.length; i++) {
     const token = tokens[i];
-
-    // Check if the token consists of kanji characters
     const isKanji = /^[\u4e00-\u9faf\u3005]+$/.test(token);
 
     if (isKanji) {
-      // Find the next non-kanji token to determine kana bounds
-      let nextNonKanjiIndex = i + 1;
-      while (nextNonKanjiIndex < tokens.length && /^[\u4e00-\u9faf]+$/.test(tokens[nextNonKanjiIndex])) {
-        nextNonKanjiIndex++;
+      let lookahead = i + 1;
+      while (lookahead < tokens.length && /^[\u4e00-\u9faf\u3005]+$/.test(tokens[lookahead])) {
+        lookahead++;
       }
 
-      let kanaEndIndex = kanaString.length;
-      if (nextNonKanjiIndex < tokens.length) {
-        const nextToken = tokens[nextNonKanjiIndex];
-        kanaEndIndex = kanaString.indexOf(nextToken, currentKanaIndex);
-        if (kanaEndIndex === -1) {
-          throw new Error(`Kana mismatch: Could not find "${nextToken}" after position ${currentKanaIndex}`);
+      let kanaEnd = kanaString.length;
+      if (lookahead < tokens.length) {
+        const nextToken = tokens[lookahead];
+        const remainingKana = kanaString.slice(currentKanaIndex);
+        const matchPosition = remainingKana.indexOf(nextToken);
+
+        if (matchPosition !== -1) {
+          kanaEnd = currentKanaIndex + matchPosition;
         }
       }
 
-      const kana = kanaString.substring(currentKanaIndex, kanaEndIndex);
-      result.push({ kanji: token, kana });
-      currentKanaIndex = kanaEndIndex;
+      const kanaSegment = kanaString.substring(currentKanaIndex, kanaEnd);
+      result.push({ kanji: token, kana: kanaSegment });
+      currentKanaIndex = kanaEnd;
     } else {
-      // Verify non-kanji token matches kana string exactly
-      const kanaSlice = kanaString.substr(currentKanaIndex, token.length);
-      if (kanaSlice !== token) {
-        throw new Error(`Kana mismatch: Expected "${token}" but found "${kanaSlice}"`);
+      // Check available characters before processing
+      const availableChars = kanaString.length - currentKanaIndex;
+      if (availableChars < token.length) {
+        throw new Error(
+          `Kana string too short at position ${currentKanaIndex}. Needed ${token.length} chars for "${token}"`,
+        );
       }
-      result.push({ kanji: token, kana: token });
+
+      const kanaSegment = kanaString.substring(currentKanaIndex, currentKanaIndex + token.length);
+      result.push({ kanji: token, kana: kanaSegment });
       currentKanaIndex += token.length;
     }
   }
 
-  // Verify entire kana string was consumed
+  // Add final verification with better error reporting
   if (currentKanaIndex !== kanaString.length) {
-    throw new Error(`Kana string was not fully parsed. Remaining: "${kanaString.slice(currentKanaIndex)}"`);
+    const remaining = kanaString.slice(currentKanaIndex);
+    const parsed = kanaString.slice(0, currentKanaIndex);
+    throw new Error(
+      `Kana mismatch: ${kanaString.length - currentKanaIndex} characters remaining\n` +
+        `Parsed: "${parsed}"\nRemaining: "${remaining}"\n` +
+        `Total characters parsed: ${currentKanaIndex}/${kanaString.length}`,
+    );
   }
 
   return result;

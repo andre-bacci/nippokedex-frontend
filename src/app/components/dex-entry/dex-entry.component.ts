@@ -1,4 +1,5 @@
-import { Component, computed, input } from '@angular/core';
+import { Component, computed, input, signal } from '@angular/core';
+import { MatSlideToggleChange, MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { FuriganaComponent } from '@app/components/furiganaText/furigana.component';
 import { DexEntry } from '@app/types/dexEntry';
 import { PokemonResponse } from '@app/types/pokemon';
@@ -14,7 +15,7 @@ interface FuriganaProcess {
 
 @Component({
   selector: 'app-dex-entry',
-  imports: [FuriganaComponent],
+  imports: [FuriganaComponent, MatSlideToggleModule],
   templateUrl: './dex-entry.component.html',
   styleUrl: './dex-entry.component.css',
 })
@@ -23,6 +24,12 @@ export class DexEntryComponent {
   version = input<string>();
   pokemonSpeciesResponse = input<PokemonSpeciesResponse>();
   pokemonResponse = input<PokemonResponse>();
+
+  showKana = signal<boolean>(false);
+
+  public setShowKana(event: MatSlideToggleChange) {
+    this.showKana.set(event.checked);
+  }
 
   description = computed(() =>
     getDexEntry(this.language(), this.version(), this.pokemonSpeciesResponse()?.flavor_text_entries),
