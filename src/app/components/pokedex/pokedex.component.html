@@ -1,37 +1,39 @@
-<section class="p-10">
+<section class="px-10 pb-10">
   @if (pokemonResponse()) {
-    <div class="flex flex-row justify-center p-1">
-      <div class="border-2 border-amber-200 rounded-xl p-10">
-        <img [src]="pokemonResponse()?.sprites?.front_default" width="100" height="100" />
+    <div class="flex flex-col gap-2">
+      <div class="flex flex-row justify-center p-1">
+        <div class="border-2 border-amber-200 rounded-xl p-10">
+          <img [src]="pokemonResponse()?.sprites?.front_default" width="100" height="100" />
+        </div>
       </div>
-    </div>
-    <div class="text-3xl flex flex-row justify-center">{{ nameJp() }}</div>
-    <div class="text-3xl flex flex-row justify-center">{{ nameEn() }}</div>
-    <div class="flex flex-row justify-center">
-      <mat-form-field>
-        <mat-label>Version</mat-label>
-        <mat-select [(ngModel)]="version">
-          @for (version of availableVersions(); track version) {
-            <mat-option [value]="version">{{ version }}</mat-option>
-          }
-        </mat-select>
-      </mat-form-field>
-    </div>
-    @if (version()) {
-      <div class="dex-entries flex flex-row justify-between text-xl gap-10">
-        <app-dex-entry
-          class="w-[50%]"
-          [version]="version()"
-          [pokemonSpeciesResponse]="pokemonSpeciesResponse()"
-          language="ja"
-        />
-        <app-dex-entry
-          class="w-[50%]"
-          [version]="version()"
-          [pokemonSpeciesResponse]="pokemonSpeciesResponse()"
-          language="en"
-        />
+      <div class="text-3xl flex flex-row justify-center">{{ nameJp() }}</div>
+      <div class="text-3xl flex flex-row justify-center">{{ nameEn() }}</div>
+      <div class="flex flex-row justify-center">
+        <mat-form-field>
+          <mat-label>Version</mat-label>
+          <mat-select [(ngModel)]="version">
+            @for (version of availableVersions(); track version) {
+              <mat-option [value]="version">{{ version }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
       </div>
-    }
+      @if (version()) {
+        <div class="dex-entries flex flex-row justify-between text-xl gap-10">
+          <app-dex-entry
+            class="w-[50%]"
+            [version]="version()"
+            [pokemonSpeciesResponse]="pokemonSpeciesResponse()"
+            language="ja"
+          />
+          <app-dex-entry
+            class="w-[50%]"
+            [version]="version()"
+            [pokemonSpeciesResponse]="pokemonSpeciesResponse()"
+            language="en"
+          />
+        </div>
+      }
+    </div>
   }
 </section>

@@ -43,6 +43,7 @@ export class DexEntryComponent {
     if (this.language() === 'ja') {
       try {
         const furigana_text = parseFurigana(this.description(), this.description_kana());
+        console.log(furigana_text);
         return {
           furigana_text: furigana_text,
           error: '',

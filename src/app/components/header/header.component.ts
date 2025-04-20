@@ -13,10 +13,10 @@ import { formatSpeciesNameToQuery } from '@app/utils/pokemon';
   imports: [MatFormFieldModule, MatInputModule, FormsModule, MatButtonModule],
   template: `
     <header>
-      <div class="flex w-full flex-row justify-between p-2">
+      <div class="flex w-full flex-row justify-between p-2 items-center bg-red-200 mb-4 border-b-1 border-red-300">
         <h1 class="text-3xl">NipPokéDex!</h1>
-        <div class="flex flex-row gap-1">
-          <mat-form-field class="w-80">
+        <div class="flex flex-row gap-2 items-center">
+          <mat-form-field class="w-80" subscriptSizing="dynamic">
             <mat-label>Search a Pokémon by index or name</mat-label>
             <input type="text" matInput [(ngModel)]="pokemon" />
           </mat-form-field>

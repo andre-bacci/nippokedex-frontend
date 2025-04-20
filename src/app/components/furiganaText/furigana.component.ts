@@ -6,14 +6,16 @@ import { FuriganaPart } from '@app/types/text';
   imports: [],
   template: `
     <div class="leading-12">
-      @for (token of furiganaText(); track token) {
-        <ruby>
-          {{ token.kanji }}
+      <ruby>
+        @for (token of furiganaText(); track token) {
+          <rb> {{ token.kanji }}</rb>
           @if (token.kana !== token.kanji) {
             <rt class="pb-0.5">{{ token.kana }}</rt>
+          } @else {
+            <rt></rt>
           }
-        </ruby>
-      }
+        }
+      </ruby>
     </div>
   `,
   styles: ``,
