@@ -3,6 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { PokedexDetailResponse } from '@app/types/response/pokedex';
 import { PokemonDetailResponse } from '@app/types/response/pokemon';
 import { VersionDetailResponse } from '@app/types/response/version';
+import { VersionGroupDetailResponse } from '@app/types/response/versionGroup';
 import { PokemonSpeciesDetailResponse } from '../types/response/pokemonSpecies';
 
 @Injectable({ providedIn: 'root' })
@@ -39,6 +40,6 @@ export class PokemonService {
   getVersionGroup(query: string | number) {
     const url = `${this.baseUrl}/version-group/${query}`;
 
-    return this.http.get(url);
+    return this.http.get<VersionGroupDetailResponse>(url);
   }
 }

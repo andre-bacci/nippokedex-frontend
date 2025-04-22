@@ -1,3 +1,4 @@
+import { PokedexResponse } from '@app/types/response/pokedex';
 import { VersionResponse } from '@app/types/response/version';
 
 export interface VersionGroupResponse {
@@ -9,4 +10,5 @@ export interface VersionGroupDetailResponse {
   id: number;
   name: string;
   versions: VersionResponse[];
+  pokedexes: PokedexResponse[];
 }

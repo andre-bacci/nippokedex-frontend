@@ -14,6 +14,7 @@ const LANGUAGES = ['ja', 'ja-Hrkt', 'en'];
 
 export class Pokemon {
   id: number;
+  name: string;
   details: {
     language: string;
     entry: PokemonDetailsByLanguage;
@@ -23,6 +24,7 @@ export class Pokemon {
 
   constructor(pokemonResponse: PokemonDetailResponse, pokemonSpeciesResponse: PokemonSpeciesDetailResponse) {
     this.id = pokemonResponse.id;
+    this.name = pokemonResponse.name;
     this.details = LANGUAGES.map((language) => {
       return {
         language: language,

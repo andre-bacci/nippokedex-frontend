@@ -13,5 +13,5 @@ export interface PokedexEntry {
 export interface PokedexDetailResponse {
   id: number;
   name: string;
-  pokemon_entries: any[];
+  pokemon_entries: PokedexEntry[];
 }

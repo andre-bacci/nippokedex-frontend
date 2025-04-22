@@ -10,5 +10,5 @@ export interface VersionDetailResponse {
   id: number;
   name: string;
   names: Name[];
-  version_group: VersionGroupResponse[];
+  version_group: VersionGroupResponse;
 }
