@@ -4,8 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { PokemonService } from '@app/services/pokemon';
-import { PokemonResponse } from '@app/types/pokemon';
-import { PokemonSpeciesResponse } from '@app/types/pokemonSpecies';
+import { Pokemon } from '@app/types/pokemon';
 import { formatSpeciesNameToQuery } from '@app/utils/pokemon';
 
 @Component({
@@ -32,25 +31,22 @@ export class HeaderComponent {
   service = new PokemonService();
   pokemon = signal('');
   version = signal('');
-  @Output() pokedexData = new EventEmitter<PokemonSpeciesResponse>();
-  @Output() pokemonData = new EventEmitter<PokemonResponse>();
+  @Output() currentPokemon = new EventEmitter<Pokemon>();
   @Output() error = new EventEmitter<string>();
   @Output() loading = new EventEmitter<boolean>();
   searchPokemon(pokemon: string) {
-    this.pokedexData.emit();
-    this.pokemonData.emit();
     this.loading.emit(true);
     this.service.getPokemonSpecies(formatSpeciesNameToQuery(pokemon)).subscribe({
-      next: (response) => {
-        this.service.getPokemonById(response.id).subscribe({
-          next: (response) => {
-            this.pokemonData.emit(response);
+      next: (pokemonSpecies) => {
+        this.service.getPokemon(pokemonSpecies.id).subscribe({
+          next: (pokemon) => {
+            const currentPokemon = new Pokemon(pokemon, pokemonSpecies);
+            this.currentPokemon.emit(currentPokemon);
           },
           error: (err) => {
             this.error.emit(`Error finding pokémon with name/index ${pokemon}`);
           },
         });
-        this.pokedexData.emit(response);
         this.error.emit('');
         this.loading.emit(false);
       },

@@ -1,6 +1,6 @@
 import { Component, signal } from '@angular/core';
 import { HomeComponent } from '@app/components/home/home.component';
-import { PokemonSpeciesResponse } from './types/pokemonSpecies';
+import { PokemonSpeciesDetailResponse } from './types/response/pokemonSpecies';
 
 @Component({
   selector: 'app-root',
@@ -15,9 +15,9 @@ import { PokemonSpeciesResponse } from './types/pokemonSpecies';
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent {
-  pokemon = signal<PokemonSpeciesResponse | undefined>(undefined);
+  pokemon = signal<PokemonSpeciesDetailResponse | undefined>(undefined);
 
-  setPokemon(pokemon: PokemonSpeciesResponse) {
+  setPokemon(pokemon: PokemonSpeciesDetailResponse) {
     this.pokemon.set(pokemon);
   }
 }

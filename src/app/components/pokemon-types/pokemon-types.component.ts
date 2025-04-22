@@ -1,5 +1,4 @@
 import { Component, computed, input } from '@angular/core';
-import { Type } from '@app/types/pokemon';
 
 @Component({
   selector: 'app-pokemon-types',
@@ -8,18 +7,18 @@ import { Type } from '@app/types/pokemon';
   styleUrl: './pokemon-types.component.css',
 })
 export class PokemonTypesComponent {
-  types = input<Type[]>();
+  types = input<string[]>();
   language = input<string>();
 
   firstType = computed(() => {
-    return this.types()
-      ?.find((type) => type.slot === 1)
-      ?.type.name.toLocaleUpperCase();
+    const types = this.types();
+    if (types && types.length) return types[0];
+    return null;
   });
 
   secondType = computed(() => {
-    return this.types()
-      ?.find((type) => type.slot === 2)
-      ?.type.name.toLocaleUpperCase();
+    const types = this.types();
+    if (types && types.length > 1) return types[1];
+    return null;
   });
 }

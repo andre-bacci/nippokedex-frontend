@@ -1,12 +1,9 @@
 import { Component, computed, input, signal } from '@angular/core';
 import { MatSlideToggleChange, MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { FuriganaComponent } from '@app/components/furiganaText/furigana.component';
-import { DexEntry } from '@app/types/dexEntry';
-import { PokemonResponse } from '@app/types/pokemon';
-import { PokemonSpeciesResponse } from '@app/types/pokemonSpecies';
+import { Pokemon } from '@app/types/pokemon';
 import { FuriganaPart } from '@app/types/text';
 import { parseFurigana } from '@app/utils/kana';
-import { getDexEntry, getGenus, getName } from '@app/utils/pokemon';
 
 interface FuriganaProcess {
   furigana_text: FuriganaPart[];
@@ -22,8 +19,7 @@ interface FuriganaProcess {
 export class DexEntryComponent {
   language = input<string>();
   version = input<string>();
-  pokemonSpeciesResponse = input<PokemonSpeciesResponse>();
-  pokemonResponse = input<PokemonResponse>();
+  currentPokemon = input<Pokemon>();
 
   showKana = signal<boolean>(false);
 
@@ -31,13 +27,20 @@ export class DexEntryComponent {
     this.showKana.set(event.checked);
   }
 
-  description = computed(() =>
-    getDexEntry(this.language(), this.version(), this.pokemonSpeciesResponse()?.flavor_text_entries),
+  genus = computed(
+    () => this.currentPokemon()?.details.find((detail) => detail.language === this.language())?.entry.genus,
   );
-  description_kana = computed(() =>
-    this.language() === 'ja'
-      ? getDexEntry('ja-Hrkt', this.version(), this.pokemonSpeciesResponse()?.flavor_text_entries)
-      : undefined,
+  description = computed(
+    () =>
+      this.currentPokemon()
+        ?.details.find((detail) => detail.language === this.language())
+        ?.entry.descriptions?.find((description) => description.version === this.version())?.flavor_text,
+  );
+  description_kana = computed(
+    () =>
+      this.currentPokemon()
+        ?.details.find((detail) => detail.language === 'ja-Hrkt')
+        ?.entry.descriptions?.find((description) => description.version === this.version())?.flavor_text,
   );
   furigana_process = computed<FuriganaProcess>(() => {
     if (this.language() === 'ja') {
@@ -57,17 +60,6 @@ export class DexEntryComponent {
     return {
       furigana_text: [],
       error: '',
-    };
-  });
-
-  dexEntry = computed<DexEntry>(() => {
-    return {
-      name: getName(this.language(), this.pokemonSpeciesResponse()?.names),
-      genus: getGenus(this.language(), this.pokemonSpeciesResponse()?.genera),
-      description: this.description(),
-      description_kana: this.description_kana(),
-      furigana_text: this.furigana_process().furigana_text,
-      types: this.pokemonResponse()?.types,
     };
   });
 }

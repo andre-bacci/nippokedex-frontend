@@ -1,5 +1,5 @@
 <div class="bg-amber-50 rounded-2xl p-4">
-  <div class="text-3xl pb-6">{{ dexEntry().genus }}</div>
+  <div class="text-3xl pb-6">{{ genus() }}</div>
   @if (language() === 'ja') {
     <div class="mb-6">
       <mat-slide-toggle [checked]="showKana()" (change)="setShowKana($event)">
@@ -9,14 +9,14 @@
   }
   @if (language() === 'ja') {
     @if (!furigana_process().error && showKana()) {
-      <app-furigana [furiganaText]="dexEntry().furigana_text" />
+      <app-furigana [furiganaText]="furigana_process().furigana_text" />
     } @else {
-      <div class="leading-12">{{ dexEntry().description }}</div>
+      <div class="leading-12">{{ description() }}</div>
       @if (showKana()) {
-        <div class="leading-12">{{ dexEntry().description_kana }}</div>
+        <div class="leading-12">{{ description_kana() }}</div>
       }
     }
   } @else {
-    <p>{{ dexEntry().description }}</p>
+    <p>{{ description() }}</p>
   }
 </div>

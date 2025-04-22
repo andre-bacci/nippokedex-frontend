@@ -1,16 +1,16 @@
 <section class="px-10 pb-10">
   @if (loading()) {
     <div class="flex flex-row justify-center">Loading response...</div>
-  } @else if (pokemonResponse()) {
+  } @else if (currentPokemon()) {
     <div class="flex flex-col gap-2">
       <div class="flex flex-row justify-center p-1">
         <div class="border-2 border-amber-200 rounded-xl p-10">
-          <img [src]="pokemonResponse()?.sprites?.front_default" width="100" height="100" />
+          <img [src]="currentPokemon()?.sprite" width="100" height="100" />
         </div>
       </div>
-      <div class="text-3xl flex flex-row justify-center">{{ nameJp() }}</div>
-      <div class="text-3xl flex flex-row justify-center">{{ nameEn() }}</div>
-      <app-pokemon-types class="text-xl flex flex-row justify-center" [types]="pokemonResponse()?.types" />
+      <div class="text-3xl flex flex-row justify-center">{{ japaneseName() }}</div>
+      <div class="text-3xl flex flex-row justify-center">{{ englishName() }}</div>
+      <app-pokemon-types class="text-xl flex flex-row justify-center" [types]="currentPokemon()?.types" />
       <div class="flex flex-row justify-center">
         <mat-form-field>
           <mat-label>Version</mat-label>
@@ -23,18 +23,8 @@
       </div>
       @if (version()) {
         <div class="dex-entries flex flex-row justify-between text-xl gap-10">
-          <app-dex-entry
-            class="w-[50%]"
-            [version]="version()"
-            [pokemonSpeciesResponse]="pokemonSpeciesResponse()"
-            language="ja"
-          />
-          <app-dex-entry
-            class="w-[50%]"
-            [version]="version()"
-            [pokemonSpeciesResponse]="pokemonSpeciesResponse()"
-            language="en"
-          />
+          <app-dex-entry class="w-[50%]" [version]="version()" [currentPokemon]="currentPokemon()" language="ja" />
+          <app-dex-entry class="w-[50%]" [version]="version()" [currentPokemon]="currentPokemon()" language="en" />
         </div>
       }
     </div>

@@ -1,8 +1,7 @@
 import { Component, signal } from '@angular/core';
 import { HeaderComponent } from '@app/components/header/header.component';
 import { PokedexComponent } from '@app/components/pokedex/pokedex.component';
-import { PokemonResponse } from '@app/types/pokemon';
-import { PokemonSpeciesResponse } from '@app/types/pokemonSpecies';
+import { Pokemon } from '@app/types/pokemon';
 
 @Component({
   selector: 'app-home',
@@ -11,18 +10,12 @@ import { PokemonSpeciesResponse } from '@app/types/pokemonSpecies';
     <main>
       <div class="container">
         <app-header
-          (pokedexData)="setPokedexData($event)"
-          (pokemonData)="setPokemonData($event)"
+          (currentPokemon)="setPokemon($event)"
           (error)="setApiError($event)"
           (loading)="setApiLoading($event)"
         />
         <section class="content">
-          <app-pokedex
-            [pokemonSpeciesResponse]="pokedexData()"
-            [pokemonResponse]="pokemonData()"
-            [error]="apiError()"
-            [loading]="apiLoading()"
-          />
+          <app-pokedex [currentPokemon]="pokemon()" [error]="apiError()" [loading]="apiLoading()" />
         </section>
       </div>
     </main>
@@ -30,18 +23,13 @@ import { PokemonSpeciesResponse } from '@app/types/pokemonSpecies';
   styles: ``,
 })
 export class HomeComponent {
-  pokedexData = signal<PokemonSpeciesResponse | undefined>(undefined);
-  pokemonData = signal<PokemonResponse | undefined>(undefined);
+  pokemon = signal<Pokemon | undefined>(undefined);
   version = signal<string>('');
   apiError = signal<string>('');
   apiLoading = signal<boolean>(false);
 
-  setPokedexData(pokemon: PokemonSpeciesResponse) {
-    this.pokedexData.set(pokemon);
-  }
-
-  setPokemonData(pokemon: PokemonResponse) {
-    this.pokemonData.set(pokemon);
+  setPokemon(pokemon: Pokemon) {
+    this.pokemon.set(pokemon);
   }
 
   setApiError(error: string) {

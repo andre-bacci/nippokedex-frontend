@@ -1,4 +1,5 @@
-import { FlavorTextEntry, Genera, Name } from '@app/types/pokemonSpecies';
+import { Name } from '@app/types/response/name';
+import { FlavorTextEntry, Genera } from '@app/types/response/pokemonSpecies';
 
 export function getDexEntry(
   language: string | undefined,

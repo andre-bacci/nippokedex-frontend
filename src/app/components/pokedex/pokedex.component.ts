@@ -3,9 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { DexEntryComponent } from '@app/components/dex-entry/dex-entry.component';
-import { PokemonResponse } from '@app/types/pokemon';
-import { PokemonSpeciesResponse } from '@app/types/pokemonSpecies';
-import { getAvailableVersions, getName } from '@app/utils/pokemon';
+import { Pokemon } from '@app/types/pokemon';
 import { PokemonTypesComponent } from '../pokemon-types/pokemon-types.component';
 
 @Component({
@@ -15,22 +13,31 @@ import { PokemonTypesComponent } from '../pokemon-types/pokemon-types.component'
   styleUrl: './pokedex.component.css',
 })
 export class PokedexComponent implements OnChanges {
-  pokemonSpeciesResponse = input<PokemonSpeciesResponse>();
-  pokemonResponse = input<PokemonResponse>();
-  error = input('');
-  loading = input(false);
+  currentPokemon = input<Pokemon>();
+  error = input<string>('');
+  loading = input<boolean>(false);
 
-  version = signal('');
+  version = signal<string>('');
 
-  availableVersions = computed(() =>
-    getAvailableVersions(['en', 'ja'], this.pokemonSpeciesResponse()?.flavor_text_entries),
-  );
+  // versions that have japanese dex entries
+  availableVersions = computed(() => {
+    return (
+      this.currentPokemon()
+        ?.details.find((detail) => detail.language === 'ja')
+        ?.entry.descriptions?.map((description) => description.version) ?? []
+    );
+  });
 
-  nameJp = computed(() => getName('ja', this.pokemonSpeciesResponse()?.names));
-  nameEn = computed(() => getName('en', this.pokemonSpeciesResponse()?.names));
+  englishName = computed(() => {
+    return this.currentPokemon()?.details.find((detail) => detail.language === 'en')?.entry.name;
+  });
+
+  japaneseName = computed(() => {
+    return this.currentPokemon()?.details.find((detail) => detail.language === 'ja')?.entry.name;
+  });
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes['pokemonSpeciesResponse']) {
+    if (changes['currentPokemon']) {
       this.version.set('');
     }
   }
