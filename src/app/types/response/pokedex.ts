@@ -1,3 +1,4 @@
+import { Name } from '@app/types/response/name';
 import { PokemonSpeciesResponse } from '@app/types/response/pokemonSpecies';
 
 export interface PokedexResponse {
@@ -13,5 +14,6 @@ export interface PokedexEntry {
 export interface PokedexDetailResponse {
   id: number;
   name: string;
+  names: Name[];
   pokemon_entries: PokedexEntry[];
 }

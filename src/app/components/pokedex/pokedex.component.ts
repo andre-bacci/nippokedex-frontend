@@ -6,6 +6,7 @@ import { DexEntryComponent } from '@app/components/dex-entry/dex-entry.component
 import { PokemonService } from '@app/services/pokemon';
 import { DexEntry } from '@app/types/dexEntry';
 import { Pokemon } from '@app/types/pokemon';
+import { firstValueFrom } from 'rxjs';
 import { PokemonTypesComponent } from '../pokemon-types/pokemon-types.component';
 
 @Component({
@@ -22,7 +23,8 @@ export class PokedexComponent implements OnChanges {
   loading = input<boolean>(false);
 
   version = signal<string>('');
-  pokedexIndex = signal<string>('');
+  pokedexIndex = signal<number>(-1);
+  pokedexName = signal<string>('');
 
   // versions that have japanese dex entries
   availableVersions = computed(() => {
@@ -40,7 +42,6 @@ export class PokedexComponent implements OnChanges {
       description:
         details?.descriptions?.find((description) => description.version === this.version())?.flavor_text ?? '',
       name: details?.name ?? '',
-      index: this.pokedexIndex(),
       genus: details?.genus ?? '',
       description_kana:
         language === 'ja'
@@ -50,47 +51,47 @@ export class PokedexComponent implements OnChanges {
   };
 
   constructor() {
-    effect(
-      () => {
-        this.getPokedexIndex();
-      },
-      { allowSignalWrites: true },
-    );
+    effect(() => {
+      this.getPokedexIndexAndName();
+    });
   }
 
-  getPokedexIndex() {
-    this.pokedexIndex.set('');
-    console.log('aaa');
-    if (!this.version() || !this.currentPokemon()) return;
-    this.service.getVersion(this.version()).subscribe({
-      next: (versionResponse) => {
-        const versionGroup = versionResponse.version_group;
-        if (!versionGroup.name) return;
-        this.service.getVersionGroup(versionGroup.name).subscribe({
-          next: (versionGroupResponse) => {
-            const pokedexes = versionGroupResponse.pokedexes;
-            pokedexes.map((pokedex) => {
-              this.service.getPokedex(pokedex.name).subscribe({
-                next: (pokedexResponse) => {
-                  const currentPokemonEntry = pokedexResponse.pokemon_entries.find(
-                    (entry) => entry.pokemon_species.name === this.currentPokemon()?.name,
-                  );
-                  if (currentPokemonEntry) {
-                    const pokedexName = pokedexResponse.name;
-                    const pokedexIndex = currentPokemonEntry.entry_number;
-                    this.pokedexIndex.set(`${pokedexName} #${pokedexIndex}`);
-                    return;
-                  }
-                },
-              });
-            });
-            this.pokedexIndex.set(`national #${this.currentPokemon()?.id}`);
-          },
-          error: (err) => {},
-        });
-      },
-      error: (err) => {},
-    });
+  async getPokedexIndexAndName() {
+    let pokedexIndex = -1;
+    let pokedexName = '';
+    const version = this.version();
+    const currentPokemon = this.currentPokemon();
+    if (!version || !currentPokemon) return;
+
+    try {
+      const versionResponse = await firstValueFrom(this.service.getVersion(this.version()));
+      const versionGroup = versionResponse.version_group;
+      if (!versionGroup.name) return;
+
+      const versionGroupResponse = await firstValueFrom(this.service.getVersionGroup(versionGroup.name));
+      const pokedexes = versionGroupResponse.pokedexes;
+      const promises = pokedexes.map(async (pokedex) => {
+        const pokedexResponse = await firstValueFrom(this.service.getPokedex(pokedex.name));
+        const currentPokemonEntry = pokedexResponse.pokemon_entries.find(
+          (entry) => entry.pokemon_species.name === this.currentPokemon()?.name,
+        );
+        if (currentPokemonEntry) {
+          pokedexIndex = currentPokemonEntry.entry_number;
+          const name = pokedexResponse.names.find((name) => name.language.name === 'en')?.name;
+          if (name) pokedexName = name;
+          else pokedexName = pokedexResponse.name;
+        }
+      });
+      await Promise.all(promises);
+    } catch (e) {
+      console.error(e);
+    }
+    if (pokedexIndex === -1) {
+      pokedexName = 'National';
+      pokedexIndex = currentPokemon.id;
+    }
+    this.pokedexName.set(pokedexName);
+    this.pokedexIndex.set(pokedexIndex);
   }
 
   englishDexEntry = computed(() => {
@@ -104,7 +105,6 @@ export class PokedexComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges) {
     if (changes['currentPokemon']) {
       this.version.set('');
-      this.pokedexIndex.set('');
     }
   }
 }

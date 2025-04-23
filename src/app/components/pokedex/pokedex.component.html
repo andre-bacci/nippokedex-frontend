@@ -20,6 +20,9 @@
           </mat-select>
         </mat-form-field>
       </div>
+      @if (pokedexIndex() != -1 && pokedexName()) {
+        <div class="flex flex-row justify-center">{{ pokedexName() }} - #{{ pokedexIndex() }}</div>
+      }
       <div class="dex-entries flex flex-row justify-between text-xl gap-10">
         <app-dex-entry class="w-[50%]" [dexEntry]="japaneseDexEntry()" />
         <app-dex-entry class="w-[50%]" [dexEntry]="englishDexEntry()" />
