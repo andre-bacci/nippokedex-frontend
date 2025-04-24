@@ -70,25 +70,23 @@ export class PokedexComponent implements OnChanges {
 
       const versionGroupResponse = await firstValueFrom(this.service.getVersionGroup(versionGroup.name));
       const pokedexes = versionGroupResponse.pokedexes;
-      const promises = pokedexes.map(async (pokedex) => {
+      for (const pokedex of pokedexes) {
+        // assumes default pokedex for version group is the first of array
         const pokedexResponse = await firstValueFrom(this.service.getPokedex(pokedex.name));
         const currentPokemonEntry = pokedexResponse.pokemon_entries.find(
-          (entry) => entry.pokemon_species.name === this.currentPokemon()?.name,
+          (entry) => entry.pokemon_species.name === currentPokemon.name,
         );
         if (currentPokemonEntry) {
-          pokedexIndex = currentPokemonEntry.entry_number;
+          this.pokedexIndex.set(currentPokemonEntry.entry_number);
           const name = pokedexResponse.names.find((name) => name.language.name === 'en')?.name;
           if (name) pokedexName = name;
           else pokedexName = pokedexResponse.name;
+          this.pokedexName.set(pokedexName);
+          return;
         }
-      });
-      await Promise.all(promises);
+      }
     } catch (e) {
       console.error(e);
-    }
-    if (pokedexIndex === -1) {
-      pokedexName = 'National';
-      pokedexIndex = currentPokemon.id;
     }
     this.pokedexName.set(pokedexName);
     this.pokedexIndex.set(pokedexIndex);

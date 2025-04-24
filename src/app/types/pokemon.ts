@@ -23,8 +23,8 @@ export class Pokemon {
   sprite: URL;
 
   constructor(pokemonResponse: PokemonDetailResponse, pokemonSpeciesResponse: PokemonSpeciesDetailResponse) {
-    this.id = pokemonResponse.id;
-    this.name = pokemonResponse.name;
+    this.id = pokemonSpeciesResponse.id;
+    this.name = pokemonSpeciesResponse.name;
     this.details = LANGUAGES.map((language) => {
       return {
         language: language,
