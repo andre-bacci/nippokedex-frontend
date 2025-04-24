@@ -11,9 +11,9 @@
       @if (!furigana_process().error && showKana()) {
         <app-furigana [furiganaText]="furigana_process().furigana_text" />
       } @else {
-        <div class="leading-12">{{ this.dexEntry()?.description }}</div>
+        <div class="leading-12">漢字: {{ this.dexEntry()?.description }}</div>
         @if (showKana()) {
-          <div class="leading-12">{{ this.dexEntry()?.description_kana }}</div>
+          <div class="leading-12 text-sm">かな: {{ this.dexEntry()?.description_kana }}</div>
         }
       }
     } @else {
