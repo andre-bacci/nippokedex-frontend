@@ -1,4 +1,4 @@
-import { Component, computed, input, signal } from '@angular/core';
+import { Component, computed, effect, input, signal } from '@angular/core';
 import { MatSlideToggleChange, MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { FuriganaComponent } from '@app/components/furiganaText/furigana.component';
 import { DexEntry } from '@app/types/dexEntry';
@@ -32,7 +32,7 @@ export class DexEntryComponent {
   furigana_process = computed<FuriganaProcess>(() => {
     if (this.canShowKana()) {
       try {
-        const furigana_text = parseFurigana(this.dexEntry()?.description, this.dexEntry()?.description_kana);
+        const furigana_text = parseFurigana(this.dexEntry()?.description, this.dexEntry()?.description_kana, true);
         return {
           furigana_text: furigana_text,
           error: '',
@@ -49,4 +49,10 @@ export class DexEntryComponent {
       error: '',
     };
   });
+
+  constructor() {
+    effect(() => {
+      if (this.furigana_process().error) console.error(this.furigana_process().error);
+    });
+  }
 }
