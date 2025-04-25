@@ -3,7 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { PokemonService } from '@app/services/pokemon';
+import { NippokedexBackendService } from '@app/services/nippokedexBackend';
 import { Pokemon } from '@app/types/pokemon';
 import { formatSpeciesNameToQuery } from '@app/utils/pokemon';
 
@@ -28,7 +28,7 @@ import { formatSpeciesNameToQuery } from '@app/utils/pokemon';
   styles: ``,
 })
 export class HeaderComponent {
-  service = new PokemonService();
+  service = new NippokedexBackendService();
   pokemon = signal('');
   version = signal('');
   @Output() currentPokemon = new EventEmitter<Pokemon>();
@@ -36,17 +36,9 @@ export class HeaderComponent {
   @Output() loading = new EventEmitter<boolean>();
   searchPokemon(pokemon: string) {
     this.loading.emit(true);
-    this.service.getPokemonSpecies(formatSpeciesNameToQuery(pokemon)).subscribe({
-      next: (pokemonSpecies) => {
-        this.service.getPokemon(pokemonSpecies.id).subscribe({
-          next: (pokemon) => {
-            const currentPokemon = new Pokemon(pokemon, pokemonSpecies);
-            this.currentPokemon.emit(currentPokemon);
-          },
-          error: (err) => {
-            this.error.emit(`Error finding pokémon with name/index ${pokemon}`);
-          },
-        });
+    this.service.getPokemon(formatSpeciesNameToQuery(pokemon)).subscribe({
+      next: (pokemon) => {
+        this.currentPokemon.emit(pokemon);
         this.error.emit('');
         this.loading.emit(false);
       },

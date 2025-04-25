@@ -13,7 +13,7 @@ export interface PokemonDetailsByLanguage {
 const LANGUAGES = ['ja', 'ja-Hrkt', 'en'];
 
 export class Pokemon {
-  id: number;
+  _id: number;
   name: string;
   details: {
     language: string;
@@ -23,7 +23,7 @@ export class Pokemon {
   sprite: URL;
 
   constructor(pokemonResponse: PokemonDetailResponse, pokemonSpeciesResponse: PokemonSpeciesDetailResponse) {
-    this.id = pokemonSpeciesResponse.id;
+    this._id = pokemonSpeciesResponse.id;
     this.name = pokemonSpeciesResponse.name;
     this.details = LANGUAGES.map((language) => {
       return {
