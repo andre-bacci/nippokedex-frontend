@@ -3,7 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { NippokedexBackendService } from '@app/services/nippokedexBackend';
+import { PokemonService } from '@app/services/nippokedexBackend';
 import { Pokemon } from '@app/types/pokemon';
 import { formatSpeciesNameToQuery } from '@app/utils/pokemon';
 
@@ -28,7 +28,7 @@ import { formatSpeciesNameToQuery } from '@app/utils/pokemon';
   styles: ``,
 })
 export class HeaderComponent {
-  service = new NippokedexBackendService();
+  service = new PokemonService();
   pokemon = signal('');
   version = signal('');
   @Output() currentPokemon = new EventEmitter<Pokemon>();
